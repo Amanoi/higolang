@@ -55,6 +55,76 @@ docker-compose logs -f
 - 前端页面：http://localhost
 - 后端 API：http://localhost:8080
 
+### 域名与 HTTPS 配置
+
+项目支持通过环境变量配置域名和 SSL 证书，方便部署到不同环境。
+
+**1. 配置域名**
+
+```bash
+# 复制环境变量模板
+cp .env.example .env
+
+# 编辑 .env，修改为你的域名
+vi .env
+```
+
+`.env` 文件内容：
+
+```bash
+# 站点域名
+DOMAIN=free.higolang.vip
+
+# SSL 证书路径（容器内路径，留空则仅启用 HTTP）
+SSL_CERT=/etc/nginx/ssl/fullchain.pem
+SSL_KEY=/etc/nginx/ssl/privkey.pem
+```
+
+**2. 配置 SSL 证书**
+
+将证书文件放入项目根目录的 `ssl/` 目录：
+
+```bash
+mkdir -p ssl
+# 将你的证书文件放入 ssl/ 目录
+cp /path/to/fullchain.pem ssl/
+cp /path/to/privkey.pem ssl/
+```
+
+**3. 使用 Let's Encrypt 免费证书**
+
+```bash
+# 先以 HTTP 模式启动（.env 中 SSL_CERT 留空）
+docker-compose up -d
+
+# 安装 certbot 并申请证书
+apt install certbot
+certbot certonly --webroot -w certbot-webroot -d free.higolang.vip
+
+# 将证书复制到 ssl/ 目录
+cp /etc/letsencrypt/live/free.higolang.vip/fullchain.pem ssl/
+cp /etc/letsencrypt/live/free.higolang.vip/privkey.pem ssl/
+
+# 修改 .env 启用 SSL
+sed -i 's|SSL_CERT=.*|SSL_CERT=/etc/nginx/ssl/fullchain.pem|' .env
+sed -i 's|SSL_KEY=.*|SSL_KEY=/etc/nginx/ssl/privkey.pem|' .env
+
+# 重启服务
+docker-compose restart web
+```
+
+**4. 更换域名**
+
+只需修改 `.env` 中的 `DOMAIN` 值并重启 web 容器：
+
+```bash
+# 修改域名
+sed -i 's|DOMAIN=.*|DOMAIN=new.higolang.vip|' .env
+
+# 重启生效
+docker-compose restart web
+```
+
 ### 使用 Make 命令
 
 ```bash
@@ -78,7 +148,7 @@ make clean
 
 ### 后端
 
-确保已安装 [Go 1.21+](https://go.dev/dl/)。
+确保已安装 [Go 1.24+](https://go.dev/dl/)。
 
 ```bash
 cd server
@@ -183,44 +253,38 @@ higolang/
 
 ## API 文档
 
-### 认证相关
+所有接口前缀为 `/api/v1`，管理接口前缀为 `/api/v1/admin`。
+
+### 公开接口
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| POST | `/api/auth/login` | 用户登录 |
-| POST | `/api/auth/register` | 用户注册 |
-| GET | `/api/auth/profile` | 获取当前用户信息 |
+| GET | `/api/v1/articles` | 文章列表（支持 `page`、`page_size`、`category`、`tag`、`search` 参数） |
+| GET | `/api/v1/articles/:slug` | 文章详情 |
+| GET | `/api/v1/categories` | 分类列表 |
+| GET | `/api/v1/tags` | 标签列表 |
+| GET | `/api/v1/go-version` | 最新 Go 版本号 |
+| GET | `/api/v1/settings/public` | 站点公开配置 |
 
-### 文章相关
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/articles` | 获取文章列表（支持分页、搜索、分类） |
-| GET | `/api/articles/:id` | 获取文章详情 |
-| POST | `/api/articles` | 创建文章（需管理员权限） |
-| PUT | `/api/articles/:id` | 更新文章（需管理员权限） |
-| DELETE | `/api/articles/:id` | 删除文章（需管理员权限） |
-
-### 数据源管理
+### 管理接口（需认证）
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | `/api/feeds` | 获取数据源列表 |
-| POST | `/api/feeds` | 添加数据源（需管理员权限） |
-| PUT | `/api/feeds/:id` | 更新数据源（需管理员权限） |
-| DELETE | `/api/feeds/:id` | 删除数据源（需管理员权限） |
-| POST | `/api/feeds/:id/fetch` | 手动触发抓取（需管理员权限） |
+| POST | `/api/v1/admin/login` | 管理员登录 |
+| GET | `/api/v1/admin/dashboard` | 仪表盘统计 |
+| GET/POST | `/api/v1/admin/articles` | 文章列表 / 创建文章 |
+| GET/PUT/DELETE | `/api/v1/admin/articles/:id` | 查看 / 编辑 / 删除文章 |
+| GET/POST | `/api/v1/admin/categories` | 分类列表 / 创建分类 |
+| PUT/DELETE | `/api/v1/admin/categories/:id` | 编辑 / 删除分类 |
+| GET/POST | `/api/v1/admin/tags` | 标签列表 / 创建标签 |
+| PUT/DELETE | `/api/v1/admin/tags/:id` | 编辑 / 删除标签 |
+| GET/POST | `/api/v1/admin/feed-sources` | 数据源列表 / 添加数据源 |
+| PUT/DELETE | `/api/v1/admin/feed-sources/:id` | 编辑 / 删除数据源 |
+| POST | `/api/v1/admin/feed-sources/:id/fetch` | 手动触发抓取 |
+| GET | `/api/v1/admin/fetch-logs` | 抓取日志 |
+| GET/PUT | `/api/v1/admin/settings` | 查看 / 更新站点设置 |
 
-### 分类相关
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| GET | `/api/categories` | 获取分类列表 |
-| POST | `/api/categories` | 创建分类（需管理员权限） |
-| PUT | `/api/categories/:id` | 更新分类（需管理员权限） |
-| DELETE | `/api/categories/:id` | 删除分类（需管理员权限） |
-
-> 所有需要管理员权限的接口，请在请求头中携带 `Authorization: Bearer <token>`。
+> 管理接口需在请求头中携带 `Authorization: Bearer <token>`。
 
 ## 配置说明
 

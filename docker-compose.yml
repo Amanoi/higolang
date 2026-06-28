@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   server:
     build: ./server
@@ -19,6 +17,16 @@ services:
     container_name: higolang-web
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      # SSL 证书目录（放入证书文件后自动启用 HTTPS）
+      - ./ssl:/etc/nginx/ssl:ro
+      # certbot 续期目录
+      - ./certbot-webroot:/var/www/certbot
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+      - SSL_CERT=${SSL_CERT:-}
+      - SSL_KEY=${SSL_KEY:-}
     depends_on:
       - server
     restart: unless-stopped
