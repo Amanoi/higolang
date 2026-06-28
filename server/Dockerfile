@@ -1,9 +1,8 @@
 FROM golang:1.24-alpine AS build
-RUN apk add --no-cache gcc musl-dev
 WORKDIR /build
 COPY . .
 RUN go mod tidy
-RUN CGO_ENABLED=1 GOOS=linux go build -o higolang-server .
+RUN CGO_ENABLED=0 GOOS=linux go build -o higolang-server .
 
 FROM alpine:latest
 RUN apk add --no-cache ca-certificates tzdata

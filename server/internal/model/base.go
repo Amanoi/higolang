@@ -4,8 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/mattn/go-sqlite3"
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
@@ -25,19 +24,12 @@ type BaseModel struct {
 
 // InitDB opens the SQLite database and runs auto-migration.
 func InitDB(cfg config.DatabaseConfig, ginMode string) *gorm.DB {
-	// Register the SQLite driver with foreign-key support.
-	_ = sqlite3.SQLiteDriver{}
-	gormsqlite := sqlite.New(sqlite.Config{
-		DriverName: "sqlite3",
-		DSN:        cfg.Path,
-	})
-
 	logLevel := logger.Warn
 	if ginMode == "debug" {
 		logLevel = logger.Info
 	}
 
-	db, err := gorm.Open(gormsqlite, &gorm.Config{
+	db, err := gorm.Open(sqlite.Open(cfg.Path), &gorm.Config{
 		Logger: logger.Default.LogMode(logLevel),
 	})
 	if err != nil {
