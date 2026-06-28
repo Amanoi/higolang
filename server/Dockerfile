@@ -1,11 +1,8 @@
 FROM golang:1.24-alpine AS build
 RUN apk add --no-cache gcc musl-dev
 WORKDIR /build
-# Copy go.mod first, run tidy to generate go.sum inside container
-COPY go.mod ./
-RUN go mod tidy
-# Copy source code and build
 COPY . .
+RUN go mod tidy
 RUN CGO_ENABLED=1 GOOS=linux go build -o higolang-server .
 
 FROM alpine:latest
