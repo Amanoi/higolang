@@ -1,0 +1,26 @@
+# Dependencies
+server/vendor/
+web/node_modules/
+
+# Build
+web/dist/
+server/higolang-server
+
+# Data
+data/*.db
+data/*.db-journal
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+*.env.local
+._*

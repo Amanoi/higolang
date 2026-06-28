@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  mode: debug
+
+database:
+  path: ./data/higolang.db
+
+jwt:
+  secret: higolang-secret-change-me-in-production
+  expire: 24
+
+scheduler:
+  enabled: true
+  default_interval: 30
+
+seed:
+  enabled: true

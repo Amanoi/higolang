@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  server:
+    build: ./server
+    container_name: higolang-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - GIN_MODE=release
+    restart: unless-stopped
+    networks:
+      - higolang
+
+  web:
+    build: ./web
+    container_name: higolang-web
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - higolang
+
+networks:
+  higolang:
+    driver: bridge
