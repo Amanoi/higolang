@@ -1,22 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
-import FrontLayout from '../views/layout/FrontLayout.vue'
-import Home from '../views/Home.vue'
-import ArticleDetail from '../views/ArticleDetail.vue'
-import Category from '../views/Category.vue'
-import Tag from '../views/Tag.vue'
-import Search from '../views/Search.vue'
-import About from '../views/About.vue'
+const FrontLayout = () => import('../views/layout/FrontLayout.vue')
+const Home = () => import('../views/Home.vue')
+const ArticleDetail = () => import('../views/ArticleDetail.vue')
+const Category = () => import('../views/Category.vue')
+const Tag = () => import('../views/Tag.vue')
+const Search = () => import('../views/Search.vue')
+const About = () => import('../views/About.vue')
 
-import Login from '../views/admin/Login.vue'
-import AdminLayout from '../views/layout/AdminLayout.vue'
-import Dashboard from '../views/admin/Dashboard.vue'
-import ArticleList from '../views/admin/ArticleList.vue'
-import ArticleEdit from '../views/admin/ArticleEdit.vue'
-import FeedSources from '../views/admin/FeedSources.vue'
-import FetchLogs from '../views/admin/FetchLogs.vue'
-import Settings from '../views/admin/Settings.vue'
+const Login = () => import('../views/admin/Login.vue')
+const AdminLayout = () => import('../views/layout/AdminLayout.vue')
+const Dashboard = () => import('../views/admin/Dashboard.vue')
+const ArticleList = () => import('../views/admin/ArticleList.vue')
+const ArticleEdit = () => import('../views/admin/ArticleEdit.vue')
+const FeedSources = () => import('../views/admin/FeedSources.vue')
+const FetchLogs = () => import('../views/admin/FetchLogs.vue')
+const Settings = () => import('../views/admin/Settings.vue')
 
 const routes = [
   {

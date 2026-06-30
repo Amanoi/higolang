@@ -67,7 +67,7 @@ import {
   DocumentTextOutline, 
   FolderOutline, 
   PricetagsOutline,
-  RssOutline,
+  NewspaperOutline,
   ListOutline,
   SettingsOutline,
   PersonOutline as PersonIcon,
@@ -112,7 +112,7 @@ const menuOptions = [
   { label: '文章管理', key: 'articles', icon: renderIcon(DocumentTextOutline) },
   { label: '分类管理', key: 'categories', icon: renderIcon(FolderOutline) },
   { label: '标签管理', key: 'tags', icon: renderIcon(PricetagsOutline) },
-  { label: '资讯源管理', key: 'feed-sources', icon: renderIcon(RssOutline) },
+  { label: '资讯源管理', key: 'feed-sources', icon: renderIcon(NewspaperOutline) },
   { label: '抓取日志', key: 'fetch-logs', icon: renderIcon(ListOutline) },
   { label: '系统设置', key: 'settings', icon: renderIcon(SettingsOutline) }
 ]

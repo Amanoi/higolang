@@ -84,7 +84,7 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
 import { NTag } from 'naive-ui'
-import { DocumentTextOutline as DocumentIcon, AddCircleOutline as AddIcon, RssOutline as RssIcon, PauseCircleOutline as PauseIcon } from '@vicons/ionicons5'
+import { DocumentTextOutline as DocumentIcon, AddCircleOutline as AddIcon, NewspaperOutline as RssIcon, PauseCircleOutline as PauseIcon } from '@vicons/ionicons5'
 import { getDashboard } from '../../api'
 
 const loading = ref(false)

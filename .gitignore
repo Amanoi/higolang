@@ -3,7 +3,6 @@ server/vendor/
 web/node_modules/
 
 # Build
-web/dist/
 server/higolang-server
 
 # Data
